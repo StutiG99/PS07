@@ -1,29 +1,33 @@
-Women Occupation
-================
-Stuti Goyal
+---
+title: "Women Occupation"
+author: "Stuti Goyal"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
 
 ## Including Code
 
 You can include R code in the document as follows:
 
-``` r
+```{r, message=FALSE}
 library(readxl)
 library(tidyverse)
 library(ggplot2)
 library(dplyr)
 ```
 
-``` r
+```{r pressure, echo=FALSE, message=FALSE}
+ipums = read_csv("wk5.csv")
+```
+```{r}
 ipums <- ipums %>% filter(YEAR > 1950 | !STATEFIP %in% c(2, 15))
 ipums %>% filter(YEAR < 1960 & STATEFIP %in% c(2, 15))
 ```
 
-    ## # A tibble: 0 × 11
-    ## # … with 11 variables: YEAR <dbl>, STATEFIP <dbl>, PERWT <dbl>, RELATE <dbl>,
-    ## #   RELATED <dbl>, SEX <dbl>, AGE <dbl>, MARST <dbl>, RACE <dbl>, RACED <dbl>,
-    ## #   OCC1950 <dbl>
-
-``` r
+```{r}
 women <- ipums %>% filter(SEX==2 & AGE %in% 15:64) %>%
                    mutate(OCCUP = OCC1950 %/% 100 + 1) %>% 
                    mutate(OCCUP = ifelse(OCCUP == 9, 2,
@@ -40,10 +44,9 @@ women <- ipums %>% filter(SEX==2 & AGE %in% 15:64) %>%
 
 You can also embed plots, for example:
 
-The following graph shows us the distribution of occupations of women
-faceted by the race.
+The following graph shows us the distribution of occupations of women faceted by the race. 
 
-``` r
+```{r}
 women %>% filter(OCCUP != 'None') %>% group_by(YEAR, OCCUP, RACEF) %>% count(wt=PERWT) %>% 
           ggplot(aes(YEAR, n, fill=OCCUP)) + 
           geom_col() + 
@@ -53,4 +56,3 @@ women %>% filter(OCCUP != 'None') %>% group_by(YEAR, OCCUP, RACEF) %>% count(wt=
           labs(x='Year', y='Number of Women', fill='Occupation', title='Occupations of Women in the United States by Race, 1900-1990')
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
